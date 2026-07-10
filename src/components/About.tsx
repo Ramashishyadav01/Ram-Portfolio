@@ -57,7 +57,7 @@ export default function About() {
             className="col-span-1 lg:col-span-6 space-y-6 text-left"
           >
             <h3 className="text-2xl font-bold text-white tracking-tight">
-              Results-Driven Full Stack & React Developer
+              Results-Driven Full Stack|MERN Stack Developer
             </h3>
             
             <p className="text-gray-400 leading-relaxed">

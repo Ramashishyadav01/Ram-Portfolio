@@ -13,10 +13,10 @@ export default function Projects() {
         'Full-stack platform with dynamic product catalog, JWT + RBAC authentication, category management & filtering; optimized MongoDB queries for sub-200ms API response times.',
         'Built fully responsive React.js + Tailwind CSS UI with real-time state management for cart updates, search filtering, and seamless checkout; RESTful APIs with role-based admin and customer endpoints.'
       ],
-      tech: ['React.js', 'Redux', 'Tailwind CSS', 'Spring Boot', 'MySQL', 'Stripe', 'JWT'],
+      tech: ['React.js', 'Redux', 'Tailwind CSS', 'Node.js', 'MongoDB', 'Express.js', 'JWT'],
       image: eShopImg,
       github: 'https://github.com/Ramashishyadav01/E-Shop',
-      demo: 'https://e-shop-demo.vercel.app',
+      //demo: 'https://e-shop-demo.vercel.app',
     },
     {
       title: 'Chatify (Real-Time Chat Application)',
@@ -27,7 +27,7 @@ export default function Projects() {
       tech: ['React.js', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB', 'Tailwind CSS', 'JWT'],
       image: chatAppImg,
       github: 'https://github.com/Ramashishyadav01/Chatify',
-      demo: 'https://chat-room-live.vercel.app',
+      //demo: 'https://chat-room-live.vercel.app',
     },
     {
       title: 'Fit-Journey (Fitness Tracking App)',
@@ -38,7 +38,7 @@ export default function Projects() {
       tech: ['React.js', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
       image: fitJourneyImg,
       github: 'https://github.com/Ramashishyadav01/Fit-Journey',
-      demo: 'https://fit-journey.vercel.app',
+      demo: 'https://fit-journey-wheat.vercel.app/',
     },
   ];
 

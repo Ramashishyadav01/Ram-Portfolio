@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Download } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, Download, Eye, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
@@ -10,6 +10,8 @@ interface NavbarProps {
 export default function Navbar({ activeSection, setActiveSection }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const resumeRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -27,6 +29,16 @@ export default function Navbar({ activeSection, setActiveSection }: NavbarProps)
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (resumeRef.current && !resumeRef.current.contains(e.target as Node)) {
+        setIsResumeOpen(false);
+      }
+    };
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
   const handleNavClick = (href: string) => {
@@ -103,14 +115,48 @@ export default function Navbar({ activeSection, setActiveSection }: NavbarProps)
             );
           })}
 
-          <a
-            href="/resume.pdf"
-            download="Ram_Ashish_Yadav_Resume.pdf"
-            className="flex items-center space-x-1.5 px-4 py-2 rounded-full border border-white/10 text-xs font-semibold hover:border-accent-blue hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-accent-blue/10 bg-white/5"
-          >
-            <Download size={14} />
-            <span>Resume</span>
-          </a>
+          {/* Resume Dropdown */}
+          <div className="relative" ref={resumeRef}>
+            <button
+              onClick={() => setIsResumeOpen(!isResumeOpen)}
+              className="flex items-center space-x-1 px-4 py-2 rounded-full border border-white/10 text-xs font-semibold hover:border-accent-blue hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-accent-blue/10 bg-white/5 cursor-pointer focus:outline-none"
+            >
+              <span>Resume</span>
+              <ChevronDown size={12} className={`transition-transform duration-300 ${isResumeOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {isResumeOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-2 w-40 rounded-xl glass-panel bg-charcoal/95 border border-white/5 py-1.5 shadow-xl text-left"
+                >
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setIsResumeOpen(false)}
+                    className="flex items-center space-x-2 px-4 py-2 text-xs text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <Eye size={12} />
+                    <span>View Resume</span>
+                  </a>
+                  <a
+                    href="/resume.pdf"
+                    download="Ram_Ashish_Yadav_Resume.pdf"
+                    onClick={() => setIsResumeOpen(false)}
+                    className="flex items-center space-x-2 px-4 py-2 text-xs text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <Download size={12} />
+                    <span>Download Resume</span>
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -152,14 +198,26 @@ export default function Navbar({ activeSection, setActiveSection }: NavbarProps)
                   </a>
                 );
               })}
-              <a
-                href="/resume.pdf"
-                download="Ram_Ashish_Yadav_Resume.pdf"
-                className="flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-accent-blue to-accent-cyan text-sm font-semibold text-white shadow-lg shadow-accent-blue/20 hover:opacity-90 transition-all duration-300"
-              >
-                <Download size={16} />
-                <span>Download Resume</span>
-              </a>
+              
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-full border border-white/10 text-sm font-semibold text-gray-300 hover:text-white transition-all bg-white/5"
+                >
+                  <Eye size={14} />
+                  <span>View</span>
+                </a>
+                <a
+                  href="/resume.pdf"
+                  download="Ram_Ashish_Yadav_Resume.pdf"
+                  className="flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-full bg-gradient-to-r from-accent-blue to-accent-cyan text-sm font-semibold text-white shadow-lg shadow-accent-blue/20 hover:opacity-90 transition-all duration-300"
+                >
+                  <Download size={14} />
+                  <span>Download</span>
+                </a>
+              </div>
             </div>
           </motion.div>
         )}

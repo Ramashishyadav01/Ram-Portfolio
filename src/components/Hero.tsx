@@ -1,9 +1,23 @@
-import { Mail, ArrowRight, Download } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { Mail, ArrowRight, Download, Eye, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Linkedin } from './icons';
 import profileImg from '../assets/profile.jpg';
 
 export default function Hero() {
+  const [isHeroResumeOpen, setIsHeroResumeOpen] = useState(false);
+  const heroResumeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (heroResumeRef.current && !heroResumeRef.current.contains(e.target as Node)) {
+        setIsHeroResumeOpen(false);
+      }
+    };
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, []);
+
   const handleScrollToContact = (e: React.MouseEvent) => {
     e.preventDefault();
     const element = document.getElementById('contact');
@@ -124,14 +138,48 @@ export default function Hero() {
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
               </a>
 
-              <a
-                href="/resume.pdf"
-                download="Ram_Ashish_Yadav_Resume.pdf"
-                className="flex items-center space-x-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 font-semibold text-gray-300 hover:border-accent-blue hover:text-white hover:bg-white/10 transition-all duration-300"
-              >
-                <Download size={16} />
-                <span>Resume</span>
-              </a>
+              {/* Resume dropdown */}
+              <div className="relative" ref={heroResumeRef}>
+                <button
+                  onClick={() => setIsHeroResumeOpen(!isHeroResumeOpen)}
+                  className="flex items-center space-x-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 font-semibold text-gray-300 hover:border-accent-blue hover:text-white hover:bg-white/10 transition-all duration-300 cursor-pointer focus:outline-none"
+                >
+                  <span>Resume</span>
+                  <ChevronDown size={14} className={`transition-transform duration-300 ${isHeroResumeOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                <AnimatePresence>
+                  {isHeroResumeOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-0 mt-2 w-48 rounded-xl glass-panel bg-charcoal/95 border border-white/5 py-1.5 shadow-xl text-left z-20"
+                    >
+                      <a
+                        href="/resume.pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setIsHeroResumeOpen(false)}
+                        className="flex items-center space-x-2.5 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <Eye size={14} />
+                        <span>View Resume</span>
+                      </a>
+                      <a
+                        href="/resume.pdf"
+                        download="Ram_Ashish_Yadav_Resume.pdf"
+                        onClick={() => setIsHeroResumeOpen(false)}
+                        className="flex items-center space-x-2.5 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <Download size={14} />
+                        <span>Download Resume</span>
+                      </a>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Social Icons */}

@@ -113,7 +113,7 @@ export default function Contact() {
                 Let's discuss your next project
               </h3>
               <p className="text-gray-400 leading-relaxed text-sm">
-                I am open to full-time opportunities, freelance projects, and collaborations. Feel free to connect with me via email, LinkedIn, or by filling out the message form.
+                I am open to full-time opportunities,Full Stack Developer Role, and collaborations. Feel free to connect with me via email, LinkedIn, or by filling out the message form.
               </p>
             </div>
 
@@ -175,7 +175,7 @@ export default function Contact() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="John Doe"
+                      placeholder="Nikhil Yadav"
                       required
                       className="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all duration-300"
                     />
@@ -192,7 +192,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="johndoe@example.com"
+                      placeholder="nikhil@example.com"
                       required
                       className="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all duration-300"
                     />
