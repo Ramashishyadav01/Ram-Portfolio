@@ -8,19 +8,19 @@ export default function Certifications() {
       title: 'Java Programming Certification',
       issuer: 'Intern Certify',
       description: 'Advanced Java programming concepts including object-oriented programming, data structures, multithreading, and collections framework.',
-      link: '#',
+      link: 'https://drive.google.com/file/d/1Fcnab4JpY0lQwsBXtNyO-1U02jr1_l5g/view?usp=drive_link',
     },
     {
       title: 'The Complete Full Stack Web Development Bootcamp',
       issuer: 'Udemy',
       description: 'Comprehensive training in modern web technologies including HTML, CSS, JavaScript, React, Node.js, Express, and Databases.',
-      link: '#',
+      link: 'https://drive.google.com/file/d/1JZ-EUpAOHAzpY_aiz3wZg8RBkLYTEDID/view?usp=drive_link',
     },
     {
       title: 'Oracle AI Foundations Associate',
       issuer: 'Oracle',
       description: 'Foundations of artificial intelligence, machine learning concepts, and Oracle Cloud Infrastructure AI services.',
-      link: '#',
+      link: 'https://drive.google.com/file/d/13fzaq5r1_TU6-dWmtZ8OtsZLuV1e9rH1/view?usp=drive_link',
     },
   ];
 
@@ -90,7 +90,7 @@ export default function Certifications() {
                       href={cert.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-gray-500 hover:text-white transition-colors duration-200"
+                      className="text-gray-500 hover:text-white hover:text-accent-blue transition-colors duration-200"
                     >
                       <ExternalLink size={16} />
                     </a>

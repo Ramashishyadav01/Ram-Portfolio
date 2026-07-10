@@ -61,8 +61,8 @@ export default function Contact() {
     {
       icon: <Linkedin className="text-accent-cyan" size={20} />,
       label: 'LinkedIn',
-      value: 'linkedin.com/in/ramashishyadav',
-      href: 'https://linkedin.com',
+      value: 'linkedin.com/in/ramashishyadav01',
+      href: 'https://www.linkedin.com/in/ramashishyadav01/',
     },
     {
       icon: <Github className="text-accent-indigo" size={20} />,

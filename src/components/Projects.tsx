@@ -26,7 +26,7 @@ export default function Projects() {
       ],
       tech: ['React.js', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB', 'Tailwind CSS', 'JWT'],
       image: chatAppImg,
-      github: 'https://github.com/Ramashishyadav01/Realtime-Chat',
+      github: 'https://github.com/Ramashishyadav01/Chatify',
       demo: 'https://chat-room-live.vercel.app',
     },
     {
