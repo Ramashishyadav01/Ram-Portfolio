@@ -58,9 +58,9 @@ export default function Hero() {
             
             {/* Main Avatar Container */}
             <motion.div
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className="w-64 h-64 sm:w-72 sm:h-72 rounded-full p-1 bg-gradient-to-r from-accent-blue to-accent-cyan shadow-2xl shadow-accent-blue/30 overflow-hidden"
+              whileHover={{ scale: 1.05, rotate: 1.5 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+              className="w-64 h-64 sm:w-72 sm:h-72 rounded-full p-1 bg-gradient-to-r from-accent-blue to-accent-cyan shadow-2xl shadow-accent-blue/30 hover:shadow-accent-blue/50 overflow-hidden cursor-pointer"
             >
               <img
                 src={profileImg}
@@ -92,21 +92,28 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-gray-400 text-lg sm:text-xl font-medium tracking-wide"
             >
-              Hi, I'm a
+              Hi I'm
             </motion.h4>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight"
+              whileHover={{ scale: 1.02, x: 6 }}
+              transition={{ 
+                type: 'spring', 
+                stiffness: 300, 
+                damping: 20,
+                default: { duration: 0.5, delay: 0.2 } 
+              }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight cursor-default hover:text-accent-blue transition-colors duration-300"
             >
               Ram Ashish Yadav
             </motion.h1>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-blue bg-size-200 animate-gradient text-transparent bg-clip-text"
+              whileHover={{ scale: 1.01 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-blue bg-size-200 animate-gradient text-transparent bg-clip-text cursor-default"
             >
               Full Stack Developer | MERN Stack | React.js | Node.js | REST APIs
             </motion.h2>
