@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { Github } from './icons';
-import fitJourneyImg from '../assets/fit-journey.jpg';
+import fitJourneyImg from '../assets/fit-journey.png';
 import eShopImg from '../assets/e-shop.jpg';
-import chatAppImg from '../assets/chat-app.jpg';
+import chatAppImg from '../assets/chatify.png';
 
 export default function Projects() {
   const projects = [
