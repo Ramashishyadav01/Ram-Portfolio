@@ -94,7 +94,7 @@ export default function Hero() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-blue bg-size-200 animate-gradient text-transparent bg-clip-text"
             >
-              Full Stack Developer | MERN Stack Developer
+              Full Stack Developer | MERN Stack | React.js | Node.js | REST APIs
             </motion.h2>
           </div>
 
@@ -155,7 +155,7 @@ export default function Hero() {
                 <Linkedin size={20} />
               </a>
               <a
-                href="mailto:ramashishyadav01@gmail.com"
+                href="mailto:yadavramashish42449@gmail.com"
                 className="p-2.5 rounded-full border border-white/5 bg-white/5 text-gray-400 hover:text-white hover:border-accent-blue/50 hover:bg-accent-blue/10 transition-all duration-300"
                 title="Email"
               >

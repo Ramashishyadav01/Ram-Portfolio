@@ -5,18 +5,18 @@ export default function About() {
   const cards = [
     {
       icon: <BookOpen className="text-accent-blue" size={24} />,
-      title: 'Education',
-      desc: 'B.Tech in Computer Science graduate focusing on core software fundamentals, algorithms, and web design.',
+      title: 'Academic Foundation',
+      desc: 'B.E. in Computer Science & Engineering graduate focusing on core software fundamentals, algorithms, databases, and systems.',
     },
     {
       icon: <Cpu className="text-accent-cyan" size={24} />,
-      title: 'Full Stack Skills',
-      desc: 'Skilled in building complete applications from responsive frontends to database-driven backends.',
+      title: 'Full Stack Specialisation',
+      desc: 'Hands-on experience building MERN stack applications with React.js, Node.js, Express, MongoDB, and REST APIs.',
     },
     {
       icon: <Award className="text-accent-indigo" size={24} />,
-      title: 'Clean Architecture',
-      desc: 'Focussed on writing maintainable, well-structured, and reusable code with robust system design.',
+      title: 'Engineering Principles',
+      desc: 'Focussed on writing secure, modular, and scalable code using JWT authentication, WebSockets, and clean design patterns.',
     },
   ];
 
@@ -57,21 +57,21 @@ export default function About() {
             className="col-span-1 lg:col-span-6 space-y-6 text-left"
           >
             <h3 className="text-2xl font-bold text-white tracking-tight">
-              Passionate Computer Science Graduate & Developer
+              Results-Driven Full Stack & React Developer
             </h3>
             
             <p className="text-gray-400 leading-relaxed">
-              I am a dedicated software engineer with a strong academic background in Computer Science. My core specialty lies in building responsive, scalable, and user-centric web applications using the MERN stack (MongoDB, Express, React, Node.js) and other modern frameworks.
+              I am a results-driven Full Stack Developer and React Developer with experience building MERN stack web applications and robust architectures. Proficient in React.js, Node.js, Express.js, MongoDB, JWT authentication, REST API design, and WebSockets (Socket.io).
             </p>
 
             <p className="text-gray-400 leading-relaxed">
-              I love turning complex problems into simple, beautiful, and intuitive interface solutions. My goal is to build software that not only functions flawlessly under the hood but also delivers a premium, smooth user experience.
+              Passionate about building scalable, secure, and user-centric products. I thrive on translating complex problems into neat, functional, and highly performant applications, utilizing modern software practices to achieve optimal efficiency.
             </p>
 
             <div className="pt-2">
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="text-2xl font-bold text-white">B.Tech</div>
+                  <div className="text-2xl font-bold text-white">B.E.</div>
                   <div className="text-xs text-gray-400">Computer Science</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/5 border border-white/5">

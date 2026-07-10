@@ -1,41 +1,44 @@
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Code, Server, Database, Wrench } from 'lucide-react';
+import { Code, Layout, Server, Database, Settings, ShieldCheck } from 'lucide-react';
 
 export default function Skills() {
   const skillCategories = [
     {
-      title: 'Frontend Development',
-      icon: <Code className="text-accent-blue" size={24} />,
-      skills: [
-        'HTML',
-        'CSS',
-        'JavaScript',
-        'React.js',
-        'Redux',
-        'Tailwind CSS',
-        'TypeScript',
-        'Vite',
-      ],
-      gradient: 'from-blue-500/20 to-cyan-500/10',
+      title: 'Languages',
+      icon: <Code className="text-accent-blue" size={22} />,
+      skills: ['JavaScript (ES6+)', 'TypeScript', 'Java'],
+      gradient: 'from-blue-500/20 to-indigo-500/10',
     },
     {
-      title: 'Backend Development',
-      icon: <Server className="text-accent-cyan" size={24} />,
-      skills: ['Node.js', 'Express.js', 'REST API', 'JWT Authentication'],
-      gradient: 'from-cyan-500/20 to-indigo-500/10',
+      title: 'Frontend',
+      icon: <Layout className="text-accent-cyan" size={22} />,
+      skills: ['React.js', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3', 'Context API', 'Redux'],
+      gradient: 'from-cyan-500/20 to-blue-500/10',
     },
     {
-      title: 'Database Systems',
-      icon: <Database className="text-accent-indigo" size={24} />,
-      skills: ['MongoDB', 'MySQL'],
+      title: 'Backend',
+      icon: <Server className="text-accent-indigo" size={22} />,
+      skills: ['Node.js', 'Express.js', 'REST API design', 'JWT', 'Socket.io (WebSockets)', 'MVC architecture'],
       gradient: 'from-indigo-500/20 to-purple-500/10',
     },
     {
+      title: 'Databases',
+      icon: <Database className="text-accent-cyan" size={22} />,
+      skills: ['MongoDB (Mongoose ODM)', 'MySQL', 'Query Optimization', 'Indexing'],
+      gradient: 'from-purple-500/20 to-pink-500/10',
+    },
+    {
       title: 'Tools & DevOps',
-      icon: <Wrench className="text-white" size={24} />,
-      skills: ['Git', 'GitHub', 'Postman', 'Vercel', 'Render', 'Docker'],
-      gradient: 'from-purple-500/20 to-blue-500/10',
+      icon: <Settings className="text-white" size={22} />,
+      skills: ['Postman', 'Jest', 'Git', 'GitHub', 'VS Code', 'npm', 'Docker', 'AWS', 'CI/CD Pipeline'],
+      gradient: 'from-pink-500/20 to-blue-500/10',
+    },
+    {
+      title: 'Methodologies',
+      icon: <ShieldCheck className="text-accent-blue" size={22} />,
+      skills: ['Agile/Scrum', 'SDLC', 'RBAC', 'Input Sanitization'],
+      gradient: 'from-blue-500/20 to-purple-500/10',
     },
   ];
 
@@ -43,14 +46,14 @@ export default function Skills() {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.1,
       },
     },
   };
 
   const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+    hidden: { opacity: 0, y: 25 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   };
 
   return (
@@ -85,32 +88,32 @@ export default function Skills() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {skillCategories.map((category) => (
             <motion.div
               key={category.title}
               variants={cardVariants}
               whileHover={{ y: -5 }}
-              className={`p-8 rounded-2xl glass-panel relative overflow-hidden group hover:border-accent-blue/30 transition-all duration-300`}
+              className={`p-6 rounded-2xl glass-panel relative overflow-hidden group hover:border-accent-blue/30 transition-all duration-300`}
             >
               {/* Card Gradient Background Hover Glow */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-30 transition-opacity duration-500 -z-10`} />
 
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 rounded-xl bg-white/5 border border-white/5 group-hover:bg-white/10 transition-colors duration-300">
+              <div className="flex items-center space-x-3.5 mb-5">
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 group-hover:bg-white/10 transition-colors duration-300">
                   {category.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-wide">
+                <h3 className="text-lg font-bold text-white tracking-wide">
                   {category.title}
                 </h3>
               </div>
 
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {category.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-300 bg-white/5 border border-white/5 hover:border-accent-blue/30 hover:text-white hover:bg-accent-blue/10 transition-all duration-300 cursor-default"
+                    className="px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-300 bg-white/5 border border-white/5 hover:border-accent-blue/30 hover:text-white hover:bg-accent-blue/10 transition-all duration-300 cursor-default"
                   >
                     {skill}
                   </span>

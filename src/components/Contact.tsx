@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { Github, Linkedin } from './icons';
 
 export default function Contact() {
@@ -43,8 +43,20 @@ export default function Contact() {
     {
       icon: <Mail className="text-accent-blue" size={20} />,
       label: 'Email',
-      value: 'ramashishyadav01@gmail.com',
-      href: 'mailto:ramashishyadav01@gmail.com',
+      value: 'yadavramashish42449@gmail.com',
+      href: 'mailto:yadavramashish42449@gmail.com',
+    },
+    {
+      icon: <Phone className="text-accent-cyan" size={20} />,
+      label: 'Phone',
+      value: '+91-7860470816',
+      href: 'tel:+917860470816',
+    },
+    {
+      icon: <MapPin className="text-accent-indigo" size={20} />,
+      label: 'Location',
+      value: 'Noida, Uttar Pradesh, India',
+      href: '#',
     },
     {
       icon: <Linkedin className="text-accent-cyan" size={20} />,
@@ -106,27 +118,38 @@ export default function Contact() {
             </div>
 
             <div className="space-y-4">
-              {contactInfo.map((info) => (
-                <a
-                  key={info.label}
-                  href={info.href}
-                  target={info.href.startsWith('http') ? '_blank' : undefined}
-                  rel={info.href.startsWith('http') ? 'noreferrer' : undefined}
-                  className="flex items-center space-x-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-accent-blue/30 transition-all duration-300 group"
-                >
-                  <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:bg-accent-blue/10 group-hover:border-accent-blue/25 transition-all duration-300">
-                    {info.icon}
+              {contactInfo.map((info) => {
+                const isAnchor = info.href !== '#';
+                const content = (
+                  <div className="flex items-center space-x-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-accent-blue/30 transition-all duration-300 group cursor-default">
+                    <div className="p-3 rounded-lg bg-white/5 border border-white/5 group-hover:bg-accent-blue/10 group-hover:border-accent-blue/25 transition-all duration-300">
+                      {info.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        {info.label}
+                      </h4>
+                      <p className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors duration-200">
+                        {info.value}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      {info.label}
-                    </h4>
-                    <p className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors duration-200">
-                      {info.value}
-                    </p>
-                  </div>
-                </a>
-              ))}
+                );
+                
+                return isAnchor ? (
+                  <a
+                    key={info.label}
+                    href={info.href}
+                    target={info.href.startsWith('http') ? '_blank' : undefined}
+                    rel={info.href.startsWith('http') ? 'noreferrer' : undefined}
+                    className="block"
+                  >
+                    {content}
+                  </a>
+                ) : (
+                  <div key={info.label}>{content}</div>
+                );
+              })}
             </div>
           </motion.div>
 

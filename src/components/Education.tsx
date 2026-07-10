@@ -3,17 +3,15 @@ import { Calendar, GraduationCap, MapPin } from 'lucide-react';
 
 export default function Education() {
   const educationDetails = {
-    degree: 'Bachelor of Technology (B.Tech)',
+    degree: 'Bachelor of Engineering (B.E.)',
     major: 'Computer Science & Engineering',
-    institution: 'UPTU Affiliated Technical University',
-    duration: '2020 - 2024',
-    location: 'Uttar Pradesh, India',
+    institution: 'IET, Dr. Bhimrao Ambedkar University',
+    duration: '2022 - 2026',
+    location: 'Agra, Uttar Pradesh, India',
     description:
-      'Completed full curriculum focusing on computer systems architecture, data structures, algorithms, object-oriented programming, database management, and software engineering methodologies.',
+      'Pursuing full Engineering curriculum focusing on computer systems architecture, data structures, algorithms, object-oriented programming, database management, and software engineering methodologies.',
     highlights: [
-      'Focus areas: Data Structures & Algorithms, DBMS, Operating Systems, Web Technologies',
-      'Completed capstone projects focusing on full stack web development architectures',
-      'Active participant in coding hackathons and technical seminars',
+      'Relevant Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, OOP, Software Engineering'
     ],
   };
 
@@ -91,7 +89,7 @@ export default function Education() {
 
               <div className="space-y-3">
                 <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                  Key Academic Highlights
+                  Academic Focus Areas
                 </h4>
                 <ul className="grid grid-cols-1 gap-2.5">
                   {educationDetails.highlights.map((highlight, idx) => (
