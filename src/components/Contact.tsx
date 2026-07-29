@@ -88,7 +88,7 @@ export default function Contact() {
         data = null;
       }
 
-      // If Serverless API returns non-200 or isn't available, try direct Web3Forms fallback
+      // If Serverless API returns non-200 or isn't available, try direct fallbacks
       if (!response.ok || !data || !data.success) {
         const accessKey =
           (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
@@ -116,13 +116,36 @@ export default function Contact() {
             setLastSubTime(Date.now());
             setFormData({ name: '', email: '', subject: '', message: '' });
             return;
-          } else {
-            throw new Error(directData.message || (data && data.message) || 'Failed to deliver message.');
           }
+        }
+
+        // Direct zero-config FormSubmit fallback to yadavramashish42449@gmail.com
+        const fsRes = await fetch('https://formsubmit.co/ajax/yadavramashish42449@gmail.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            name: trimmedName,
+            email: trimmedEmail,
+            _subject: trimmedSubject || `Portfolio Message from ${trimmedName}`,
+            message: trimmedMessage,
+            _captcha: 'false',
+          }),
+        });
+
+        const fsData = await fsRes.json();
+        if (fsRes.ok && (fsData.success === 'true' || fsData.success === true)) {
+          setStatus('success');
+          setLastSubTime(Date.now());
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          return;
         } else {
           throw new Error(
             (data && data.message) ||
-              'Email service configuration is missing. Please set WEB3FORMS_ACCESS_KEY in Vercel environment variables.'
+              fsData.message ||
+              'Failed to deliver message. Please try again.'
           );
         }
       }

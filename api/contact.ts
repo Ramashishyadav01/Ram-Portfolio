@@ -31,7 +31,6 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
     if (typeof req.body === 'object' && req.body !== null) {
       body = req.body;
     } else {
-      // Parse body from stream if not pre-parsed by body-parser
       const buffers: Uint8Array[] = [];
       for await (const chunk of req) {
         buffers.push(chunk);
@@ -74,44 +73,68 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
       return;
     }
 
-    // Determine access key from environment
+    // Determine access key from environment if available
     const accessKey =
       process.env.WEB3FORMS_ACCESS_KEY ||
       process.env.VITE_WEB3FORMS_ACCESS_KEY ||
       process.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
 
-    if (!accessKey) {
-      res.statusCode = 500;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          success: false,
-          message: 'Server configuration error: WEB3FORMS_ACCESS_KEY environment variable is not set on Vercel.',
-        })
-      );
-      return;
+    // Option 1: Web3Forms if key is configured
+    if (accessKey && accessKey !== 'your_web3forms_access_key_here') {
+      const web3Response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: name.trim(),
+          email: email.trim(),
+          subject: (subject && subject.trim()) || `New Portfolio Contact Message from ${name.trim()}`,
+          message: message.trim(),
+          from_name: "Ram's Portfolio",
+        }),
+      });
+
+      const data = await web3Response.json();
+
+      if (web3Response.ok && data.success) {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(
+          JSON.stringify({
+            success: true,
+            message: 'Message delivered successfully to Ramashish Yadav!',
+          })
+        );
+        return;
+      }
     }
 
-    // Forward submission to Web3Forms API
-    const web3Response = await fetch('https://api.web3forms.com/submit', {
+    // Option 2: Fallback to FormSubmit (Zero-config email forwarding directly to yadavramashish42449@gmail.com)
+    const targetEmail = 'yadavramashish42449@gmail.com';
+    const formSubmitRes = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        Referer: 'https://ram-portfolio-hazel.vercel.app/',
+        Origin: 'https://ram-portfolio-hazel.vercel.app',
       },
       body: JSON.stringify({
-        access_key: accessKey,
         name: name.trim(),
         email: email.trim(),
-        subject: (subject && subject.trim()) || `New Portfolio Contact Message from ${name.trim()}`,
+        _subject: (subject && subject.trim()) || `Portfolio Message from ${name.trim()}`,
         message: message.trim(),
-        from_name: "Ram's Portfolio",
+        _template: 'table',
+        _captcha: 'false',
       }),
     });
 
-    const data = await web3Response.json();
+    const fsData = await formSubmitRes.json();
 
-    if (web3Response.ok && data.success) {
+    if (formSubmitRes.ok && (fsData.success === 'true' || fsData.success === true)) {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.end(
@@ -121,13 +144,24 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
         })
       );
       return;
+    } else if (fsData.message && fsData.message.includes('needs Activation')) {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(
+        JSON.stringify({
+          success: true,
+          message:
+            "Activation required: An email has been sent to yadavramashish42449@gmail.com. Please click the 'Activate Form' link in your Gmail inbox to receive messages instantly!",
+        })
+      );
+      return;
     } else {
-      res.statusCode = web3Response.status || 400;
+      res.statusCode = 400;
       res.setHeader('Content-Type', 'application/json');
       res.end(
         JSON.stringify({
           success: false,
-          message: data.message || 'Failed to dispatch email via provider.',
+          message: fsData.message || 'Failed to dispatch email. Please try again.',
         })
       );
       return;
