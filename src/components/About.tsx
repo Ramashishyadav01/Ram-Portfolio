@@ -61,7 +61,7 @@ export default function About() {
             </h3>
             
             <p className="text-gray-400 leading-relaxed">
-              I am a results-driven Full Stack Developer and React Developer with experience building MERN stack web applications and robust architectures. Proficient in React.js, Node.js, Express.js, MongoDB, JWT authentication, REST API design, and WebSockets (Socket.io).
+              I am a results-driven Full Stack Developer and React Developer with hands-on production experience building enterprise financial systems and MERN stack web applications. Delivered a multi-tier accounting system for a UAE-based company in a 60-day remote sprint. Proficient in React.js, Node.js, Express.js, MongoDB, JWT authentication, REST API design, WebSockets (Socket.io), and Agile/Scrum workflows.
             </p>
 
             <p className="text-gray-400 leading-relaxed">

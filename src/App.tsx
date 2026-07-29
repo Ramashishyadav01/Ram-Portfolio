@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Experience from './components/Experience';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Education from './components/Education';
@@ -14,7 +15,7 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'about', 'skills', 'projects', 'education', 'certifications', 'contact'];
+      const sections = ['home', 'about', 'experience', 'skills', 'projects', 'education', 'certifications', 'contact'];
       const scrollPosition = window.scrollY + 200; // offset for detection
 
       for (const section of sections) {
@@ -43,6 +44,7 @@ function App() {
       <main className="flex-grow">
         <Hero />
         <About />
+        <Experience />
         <Skills />
         <Projects />
         <Education />
