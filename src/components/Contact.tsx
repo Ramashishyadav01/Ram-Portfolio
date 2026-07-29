@@ -12,31 +12,137 @@ export default function Contact() {
   });
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [lastSubTime, setLastSubTime] = useState<number>(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (status === 'error') {
+      setStatus('idle');
+      setErrorMessage('');
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
+
+    if (status === 'loading') return;
+
+    // Prevent duplicate submissions within 5 seconds
+    const now = Date.now();
+    if (now - lastSubTime < 5000) {
       setStatus('error');
+      setErrorMessage('Please wait a few seconds before sending another message.');
       return;
     }
-    
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMessage = formData.message.trim();
+
+    // Validation
+    if (!trimmedName || trimmedName.length < 2) {
+      setStatus('error');
+      setErrorMessage('Please enter your name (at least 2 characters).');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setStatus('error');
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if (!trimmedMessage || trimmedMessage.length < 5) {
+      setStatus('error');
+      setErrorMessage('Please enter a message (at least 5 characters).');
+      return;
+    }
+
     setStatus('loading');
-    
-    // Simulate API call
-    setTimeout(() => {
+    setErrorMessage('');
+
+    try {
+      // Primary: Try Vercel Serverless Endpoint
+      let response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: trimmedName,
+          email: trimmedEmail,
+          subject: trimmedSubject,
+          message: trimmedMessage,
+        }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      // If Serverless API returns non-200 or isn't available, try direct Web3Forms fallback
+      if (!response.ok || !data || !data.success) {
+        const accessKey =
+          (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
+          (import.meta as any).env?.WEB3FORMS_ACCESS_KEY;
+
+        if (accessKey && accessKey !== 'your_web3forms_access_key_here') {
+          const directRes = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              access_key: accessKey,
+              name: trimmedName,
+              email: trimmedEmail,
+              subject: trimmedSubject || `New Portfolio Contact Message from ${trimmedName}`,
+              message: trimmedMessage,
+              from_name: "Ram's Portfolio",
+            }),
+          });
+          const directData = await directRes.json();
+          if (directRes.ok && directData.success) {
+            setStatus('success');
+            setLastSubTime(Date.now());
+            setFormData({ name: '', email: '', subject: '', message: '' });
+            return;
+          } else {
+            throw new Error(directData.message || (data && data.message) || 'Failed to deliver message.');
+          }
+        } else {
+          throw new Error(
+            (data && data.message) ||
+              'Email service configuration is missing. Please set WEB3FORMS_ACCESS_KEY in Vercel environment variables.'
+          );
+        }
+      }
+
+      // API Success
       setStatus('success');
+      setLastSubTime(Date.now());
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: '',
       });
-    }, 1500);
+    } catch (err: any) {
+      console.error('Contact Form Submit Error:', err);
+      setStatus('error');
+      setErrorMessage(
+        err.message || 'An unexpected error occurred while sending your message. Please try again.'
+      );
+    }
   };
 
   const contactInfo = [
@@ -274,8 +380,8 @@ export default function Contact() {
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center space-x-2 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm"
                   >
-                    <AlertCircle size={18} />
-                    <span>Failed to submit. Please fill out all required fields.</span>
+                    <AlertCircle size={18} className="flex-shrink-0" />
+                    <span>{errorMessage || 'Failed to submit. Please fill out all required fields.'}</span>
                   </motion.div>
                 )}
               </form>
