@@ -165,7 +165,7 @@ export default function Hero() {
                       className="absolute left-0 mt-2 w-48 rounded-xl glass-panel bg-charcoal/95 border border-white/5 py-1.5 shadow-xl text-left z-20"
                     >
                       <a
-                        href="/resume.pdf"
+                        href="/Ram_Ashish_Yadav_Resume_Updated(9).pdf"
                         target="_blank"
                         rel="noreferrer"
                         onClick={() => setIsHeroResumeOpen(false)}
@@ -175,8 +175,8 @@ export default function Hero() {
                         <span>View Resume</span>
                       </a>
                       <a
-                        href="/resume.pdf"
-                        download="Ram_Ashish_Yadav_Resume.pdf"
+                        href="/Ram_Ashish_Yadav_Resume_Updated(9).pdf"
+                        download="Ram_Ashish_Yadav_Resume_Updated(9).pdf"
                         onClick={() => setIsHeroResumeOpen(false)}
                         className="flex items-center space-x-2.5 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
                       >
