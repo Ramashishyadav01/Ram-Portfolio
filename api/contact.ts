@@ -81,34 +81,39 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
 
     // Option 1: Web3Forms if key is configured
     if (accessKey && accessKey !== 'your_web3forms_access_key_here') {
-      const web3Response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          name: name.trim(),
-          email: email.trim(),
-          subject: (subject && subject.trim()) || `New Portfolio Contact Message from ${name.trim()}`,
-          message: message.trim(),
-          from_name: "Ram's Portfolio",
-        }),
-      });
+      try {
+        const web3Response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          signal: AbortSignal.timeout(6000),
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: name.trim(),
+            email: email.trim(),
+            subject: (subject && subject.trim()) || `New Portfolio Contact Message from ${name.trim()}`,
+            message: message.trim(),
+            from_name: "Ram's Portfolio",
+          }),
+        });
 
-      const data = await web3Response.json();
+        const data: any = await web3Response.json();
 
-      if (web3Response.ok && data.success) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(
-          JSON.stringify({
-            success: true,
-            message: 'Message delivered successfully to Ramashish Yadav!',
-          })
-        );
-        return;
+        if (web3Response.ok && data.success) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(
+            JSON.stringify({
+              success: true,
+              message: 'Message delivered successfully to Ramashish Yadav!',
+            })
+          );
+          return;
+        }
+      } catch (e) {
+        console.warn('Web3Forms attempt timed out or failed in api/contact:', e);
       }
     }
 
@@ -122,6 +127,7 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
         Referer: 'https://ram-portfolio-hazel.vercel.app/',
         Origin: 'https://ram-portfolio-hazel.vercel.app',
       },
+      signal: AbortSignal.timeout(6000),
       body: JSON.stringify({
         name: name.trim(),
         email: email.trim(),
@@ -132,7 +138,7 @@ export default async function handler(req: IncomingMessage & { body?: any }, res
       }),
     });
 
-    const fsData = await formSubmitRes.json();
+    const fsData: any = await formSubmitRes.json();
 
     if (formSubmitRes.ok && (fsData.success === 'true' || fsData.success === true)) {
       res.statusCode = 200;

@@ -1,46 +1,18 @@
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { Github } from './icons';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 import fitJourneyImg from '../assets/fit-journey.png';
 import eShopImg from '../assets/e-shop.jpg';
 import chatAppImg from '../assets/chatify.png';
 
 export default function Projects() {
-  const projects = [
-    {
-      title: 'E-Shop (E-Commerce Platform)',
-      description: [
-        'Full-stack platform with dynamic product catalog, JWT + RBAC authentication, category management & filtering; optimized MongoDB queries for sub-200ms API response times.',
-        'Built fully responsive React.js + Tailwind CSS UI with real-time state management for cart updates, search filtering, and seamless checkout; RESTful APIs with role-based admin and customer endpoints.'
-      ],
-      tech: ['React.js', 'Redux', 'Tailwind CSS', 'Node.js', 'MongoDB', 'Express.js', 'JWT'],
-      image: eShopImg,
-      github: 'https://github.com/Ramashishyadav01/E-Shop',
-      //demo: 'https://e-shop-demo.vercel.app',
-    },
-    {
-      title: 'Chatify (Real-Time Chat Application)',
-      description: [
-        'Bidirectional real-time communication via Socket.io (WebSockets) supporting 200+ simultaneous sessions; JWT-based auth middleware and MongoDB-based persistent chat history across user sessions.',
-        'Built typing indicators, read receipts, and dynamic active user lists — responsive React.js + Tailwind CSS cross-device experience.'
-      ],
-      tech: ['React.js', 'Node.js', 'Express.js', 'Socket.io', 'MongoDB', 'Tailwind CSS', 'JWT'],
-      image: chatAppImg,
-      github: 'https://github.com/Ramashishyadav01/Chatify',
-      //demo: 'https://chat-room-live.vercel.app',
-    },
-    {
-      title: 'Fit-Journey (Fitness Tracking App)',
-      description: [
-        'Developed a responsive frontend fitness dashboard for tracking daily workouts and visualizing health metrics; integrated API endpoints for secure user authentication and dynamic workout logs deployed on Vercel with CI/CD pipeline.',
-        'Implemented robust client-side error handling and form input validation; maintained detailed GitHub documentation for UI components and application state logic throughout development.'
-      ],
-      tech: ['React.js', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
-      image: fitJourneyImg,
-      github: 'https://github.com/Ramashishyadav01/Fit-Journey',
-      demo: 'https://fit-journey-wheat.vercel.app/',
-    },
-  ];
+  const { projects: contextProjects } = usePortfolioData();
+
+  const fallbackImages = [eShopImg, chatAppImg, fitJourneyImg];
+
+  // Only display published projects on public portfolio
+  const publishedProjects = contextProjects.filter((p) => p.status === 'published');
 
   return (
     <section id="projects" className="py-20 bg-charcoal-dark/40 relative">
@@ -70,9 +42,9 @@ export default function Projects() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
+          {publishedProjects.map((project, index) => (
             <motion.div
-              key={project.title}
+              key={project._id || project.title + index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-100px' }}
@@ -83,7 +55,7 @@ export default function Projects() {
               {/* Project Image */}
               <div className="h-48 overflow-hidden relative bg-charcoal-dark">
                 <img
-                  src={project.image}
+                  src={project.image || fallbackImages[index % fallbackImages.length]}
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
@@ -96,11 +68,14 @@ export default function Projects() {
                   <h3 className="text-lg font-bold text-white tracking-wide group-hover:text-accent-blue transition-colors">
                     {project.title}
                   </h3>
-                  
-                  {/* Detailed Recruiter-friendly bullet points */}
+
+                  {/* Bullet Points */}
                   <ul className="space-y-2.5">
                     {project.description.map((bullet, bulletIdx) => (
-                      <li key={bulletIdx} className="flex items-start space-x-2 text-xs leading-relaxed text-gray-400">
+                      <li
+                        key={bulletIdx}
+                        className="flex items-start space-x-2 text-xs leading-relaxed text-gray-400"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-accent-blue mt-1.5 flex-shrink-0" />
                         <span>{bullet}</span>
                       </li>
@@ -123,24 +98,28 @@ export default function Projects() {
 
                   {/* Links Row */}
                   <div className="flex items-center gap-4 pt-1">
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center space-x-1.5 text-xs font-semibold text-gray-300 hover:text-white transition-colors duration-200"
-                    >
-                      <Github size={14} />
-                      <span>Code</span>
-                    </a>
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center space-x-1.5 text-xs font-semibold text-accent-blue hover:text-accent-cyan transition-colors duration-200"
-                    >
-                      <ExternalLink size={14} />
-                      <span>Live Demo</span>
-                    </a>
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center space-x-1.5 text-xs font-semibold text-gray-300 hover:text-white transition-colors duration-200"
+                      >
+                        <Github size={14} />
+                        <span>Code</span>
+                      </a>
+                    )}
+                    {project.demo && (
+                      <a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center space-x-1.5 text-xs font-semibold text-accent-blue hover:text-accent-cyan transition-colors duration-200"
+                      >
+                        <ExternalLink size={14} />
+                        <span>Live Demo</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

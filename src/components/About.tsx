@@ -1,24 +1,85 @@
 import { motion } from 'framer-motion';
-import { Award, BookOpen, Cpu } from 'lucide-react';
+import { Award, BookOpen, Cpu, Star, GraduationCap, Briefcase, Code, CheckCircle } from 'lucide-react';
+import { usePortfolioData } from '../hooks/usePortfolioData';
+
+function getHighlightIcon(name: string, index: number) {
+  const iconProps = {
+    size: 24,
+    className:
+      index === 0
+        ? 'text-accent-blue'
+        : index === 1
+        ? 'text-accent-cyan'
+        : 'text-accent-indigo',
+  };
+
+  switch (name?.toLowerCase()) {
+    case 'bookopen':
+    case 'education':
+      return <BookOpen {...iconProps} />;
+    case 'cpu':
+    case 'stack':
+      return <Cpu {...iconProps} />;
+    case 'award':
+    case 'achievement':
+      return <Award {...iconProps} />;
+    case 'star':
+      return <Star {...iconProps} />;
+    case 'graduationcap':
+      return <GraduationCap {...iconProps} />;
+    case 'briefcase':
+      return <Briefcase {...iconProps} />;
+    case 'code':
+      return <Code {...iconProps} />;
+    default:
+      return <CheckCircle {...iconProps} />;
+  }
+}
 
 export default function About() {
-  const cards = [
-    {
-      icon: <BookOpen className="text-accent-blue" size={24} />,
-      title: 'Academic Foundation',
-      desc: 'B.E. in Computer Science & Engineering graduate focusing on core software fundamentals, algorithms, databases, and systems.',
-    },
-    {
-      icon: <Cpu className="text-accent-cyan" size={24} />,
-      title: 'Full Stack Specialisation',
-      desc: 'Hands-on experience building MERN stack applications with React.js, Node.js, Express, MongoDB, and REST APIs.',
-    },
-    {
-      icon: <Award className="text-accent-indigo" size={24} />,
-      title: 'Engineering Principles',
-      desc: 'Focussed on writing secure, modular, and scalable code using JWT authentication, WebSockets, and clean design patterns.',
-    },
-  ];
+  const { about } = usePortfolioData();
+
+  const title = about.title || 'Results-Driven Full Stack|MERN Stack Developer';
+  const subtitle = about.subtitle || 'Professional Introduction';
+  const paragraphs =
+    about.description && about.description.length > 0
+      ? about.description
+      : [
+          'I am a results-driven Full Stack Developer and React Developer with hands-on production experience building enterprise financial systems and MERN stack web applications.',
+          'Passionate about building scalable, secure, and user-centric products.',
+        ];
+  const stats =
+    about.stats && about.stats.length > 0
+      ? about.stats
+      : [
+          { value: 'B.E.', label: 'Computer Science' },
+          { value: 'MERN', label: 'Full Stack Expert' },
+        ];
+
+  const cards =
+    about.highlights && about.highlights.length > 0
+      ? about.highlights.map((h, idx) => ({
+          icon: getHighlightIcon(h.icon, idx),
+          title: h.title,
+          desc: h.desc,
+        }))
+      : [
+          {
+            icon: <BookOpen className="text-accent-blue" size={24} />,
+            title: 'Academic Foundation',
+            desc: 'B.E. in Computer Science & Engineering graduate focusing on core software fundamentals, algorithms, databases, and systems.',
+          },
+          {
+            icon: <Cpu className="text-accent-cyan" size={24} />,
+            title: 'Full Stack Specialisation',
+            desc: 'Hands-on experience building MERN stack applications with React.js, Node.js, Express, MongoDB, and REST APIs.',
+          },
+          {
+            icon: <Award className="text-accent-indigo" size={24} />,
+            title: 'Engineering Principles',
+            desc: 'Focussed on writing secure, modular, and scalable code using JWT authentication, WebSockets, and clean design patterns.',
+          },
+        ];
 
   return (
     <section id="about" className="py-20 bg-charcoal-dark/40 relative">
@@ -41,7 +102,7 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight"
           >
-            Professional Introduction
+            {subtitle}
           </motion.h2>
           <div className="w-12 h-1 bg-gradient-to-r from-accent-blue to-accent-cyan rounded-full mt-4"></div>
         </div>
@@ -57,27 +118,23 @@ export default function About() {
             className="col-span-1 lg:col-span-6 space-y-6 text-left"
           >
             <h3 className="text-2xl font-bold text-white tracking-tight">
-              Results-Driven Full Stack|MERN Stack Developer
+              {title}
             </h3>
-            
-            <p className="text-gray-400 leading-relaxed">
-              I am a results-driven Full Stack Developer and React Developer with hands-on production experience building enterprise financial systems and MERN stack web applications. Delivered a multi-tier accounting system for a UAE-based company in a 60-day remote sprint. Proficient in React.js, Node.js, Express.js, MongoDB, JWT authentication, REST API design, WebSockets (Socket.io), and Agile/Scrum workflows.
-            </p>
 
-            <p className="text-gray-400 leading-relaxed">
-              Passionate about building scalable, secure, and user-centric products. I thrive on translating complex problems into neat, functional, and highly performant applications, utilizing modern software practices to achieve optimal efficiency.
-            </p>
+            {paragraphs.map((para, i) => (
+              <p key={i} className="text-gray-400 leading-relaxed">
+                {para}
+              </p>
+            ))}
 
             <div className="pt-2">
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="text-2xl font-bold text-white">B.E.</div>
-                  <div className="text-xs text-gray-400">Computer Science</div>
-                </div>
-                <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                  <div className="text-2xl font-bold text-white">MERN</div>
-                  <div className="text-xs text-gray-400">Full Stack Expert</div>
-                </div>
+                {stats.map((stat, i) => (
+                  <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/5">
+                    <div className="text-2xl font-bold text-white">{stat.value}</div>
+                    <div className="text-xs text-gray-400">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -86,7 +143,7 @@ export default function About() {
           <div className="col-span-1 lg:col-span-6 grid grid-cols-1 gap-6">
             {cards.map((card, index) => (
               <motion.div
-                key={card.title}
+                key={card.title || index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-100px' }}

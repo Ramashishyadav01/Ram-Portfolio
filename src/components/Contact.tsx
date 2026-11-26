@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle, Loader, Globe } from 'lucide-react';
 import { Github, Linkedin } from './icons';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 
 export default function Contact() {
+  const { contact } = usePortfolioData();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,14 +16,36 @@ export default function Contact() {
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [lastSubTime, setLastSubTime] = useState<number>(0);
+
+  const email = contact.email || 'yadavramashish42449@gmail.com';
+  const phone = contact.phone || '+91-7860470816';
+  const location = contact.location || 'Noida, Uttar Pradesh, India';
+  const linkedin = contact.linkedin || 'https://www.linkedin.com/in/ramashishyadav01/';
+  const github = contact.github || 'https://github.com/Ramashishyadav01';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (status === 'error') {
+    if (status === 'error' || status === 'success') {
       setStatus('idle');
       setErrorMessage('');
+      setSuccessMessage('');
+    }
+  };
+
+  const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeoutMs = 5000) => {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+      return response;
+    } finally {
+      clearTimeout(id);
     }
   };
 
@@ -64,101 +89,131 @@ export default function Contact() {
 
     setStatus('loading');
     setErrorMessage('');
+    setSuccessMessage('');
 
     try {
-      // Primary: Try Vercel Serverless Endpoint
-      let response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-          email: trimmedEmail,
-          subject: trimmedSubject,
-          message: trimmedMessage,
-        }),
-      });
-
-      let data;
+      // 1. Try Vercel / Local Dev Serverless Endpoint (/api/contact)
       try {
-        data = await response.json();
-      } catch {
-        data = null;
-      }
-
-      // If Serverless API returns non-200 or isn't available, try direct fallbacks
-      if (!response.ok || !data || !data.success) {
-        const accessKey =
-          (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
-          (import.meta as any).env?.WEB3FORMS_ACCESS_KEY;
-
-        if (accessKey && accessKey !== 'your_web3forms_access_key_here') {
-          const directRes = await fetch('https://api.web3forms.com/submit', {
+        const response = await fetchWithTimeout(
+          '/api/contact',
+          {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               Accept: 'application/json',
             },
             body: JSON.stringify({
-              access_key: accessKey,
               name: trimmedName,
               email: trimmedEmail,
-              subject: trimmedSubject || `New Portfolio Contact Message from ${trimmedName}`,
+              subject: trimmedSubject,
               message: trimmedMessage,
-              from_name: "Ram's Portfolio",
             }),
-          });
-          const directData = await directRes.json();
-          if (directRes.ok && directData.success) {
+          },
+          5000
+        );
+
+        const contentType = response.headers.get('content-type') || '';
+        if (response.ok && contentType.includes('application/json')) {
+          const resData = await response.json();
+          if (resData && resData.success) {
             setStatus('success');
+            setSuccessMessage(
+              resData.message || 'Thanks for reaching out! I will get back to you as soon as possible.'
+            );
             setLastSubTime(Date.now());
             setFormData({ name: '', email: '', subject: '', message: '' });
             return;
           }
         }
+      } catch (err) {
+        console.warn('/api/contact endpoint timed out or unavailable, trying direct fallbacks:', err);
+      }
 
-        // Direct zero-config FormSubmit fallback to yadavramashish42449@gmail.com
-        const fsRes = await fetch('https://formsubmit.co/ajax/yadavramashish42449@gmail.com', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+      // 2. Try Direct Web3Forms if key is configured
+      const accessKey =
+        (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY ||
+        (import.meta as any).env?.WEB3FORMS_ACCESS_KEY;
+
+      if (accessKey && accessKey !== 'your_web3forms_access_key_here') {
+        try {
+          const directRes = await fetchWithTimeout(
+            'https://api.web3forms.com/submit',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify({
+                access_key: accessKey,
+                name: trimmedName,
+                email: trimmedEmail,
+                subject: trimmedSubject || `New Portfolio Contact Message from ${trimmedName}`,
+                message: trimmedMessage,
+                from_name: "Ram's Portfolio",
+              }),
+            },
+            5000
+          );
+
+          const directData = await directRes.json();
+          if (directRes.ok && directData.success) {
+            setStatus('success');
+            setSuccessMessage('Thanks for reaching out! Your message was sent successfully.');
+            setLastSubTime(Date.now());
+            setFormData({ name: '', email: '', subject: '', message: '' });
+            return;
+          }
+        } catch (err) {
+          console.warn('Direct Web3Forms fallback timed out or failed:', err);
+        }
+      }
+
+      // 3. Try FormSubmit AJAX fallback directly
+      try {
+        const fsRes = await fetchWithTimeout(
+          `https://formsubmit.co/ajax/${email}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              name: trimmedName,
+              email: trimmedEmail,
+              _subject: trimmedSubject || `Portfolio Message from ${trimmedName}`,
+              message: trimmedMessage,
+              _captcha: 'false',
+            }),
           },
-          body: JSON.stringify({
-            name: trimmedName,
-            email: trimmedEmail,
-            _subject: trimmedSubject || `Portfolio Message from ${trimmedName}`,
-            message: trimmedMessage,
-            _captcha: 'false',
-          }),
-        });
+          5000
+        );
 
         const fsData = await fsRes.json();
         if (fsRes.ok && (fsData.success === 'true' || fsData.success === true)) {
           setStatus('success');
+          setSuccessMessage('Thanks for reaching out! I will get back to you as soon as possible.');
           setLastSubTime(Date.now());
           setFormData({ name: '', email: '', subject: '', message: '' });
           return;
-        } else {
-          throw new Error(
-            (data && data.message) ||
-              fsData.message ||
-              'Failed to deliver message. Please try again.'
+        } else if (fsData.message && fsData.message.includes('needs Activation')) {
+          setStatus('success');
+          setSuccessMessage(
+            `Form activation required: An activation email has been sent to ${email}. Please click 'Activate Form' in your inbox to complete setup!`
           );
+          setLastSubTime(Date.now());
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          return;
         }
+      } catch (err) {
+        console.warn('Direct FormSubmit fallback timed out or failed:', err);
       }
 
-      // API Success
-      setStatus('success');
-      setLastSubTime(Date.now());
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
+      // 4. Fallback: prompt to email directly
+      throw new Error(
+        `Unable to send message automatically. Please contact directly via email: ${email}`
+      );
     } catch (err: any) {
       console.error('Contact Form Submit Error:', err);
       setStatus('error');
@@ -172,33 +227,39 @@ export default function Contact() {
     {
       icon: <Mail className="text-accent-blue" size={20} />,
       label: 'Email',
-      value: 'yadavramashish42449@gmail.com',
-      href: 'mailto:yadavramashish42449@gmail.com',
+      value: email,
+      href: `mailto:${email}`,
     },
     {
       icon: <Phone className="text-accent-cyan" size={20} />,
       label: 'Phone',
-      value: '+91-7860470816',
-      href: 'tel:+917860470816',
+      value: phone,
+      href: `tel:${phone.replace(/[^0-9+]/g, '')}`,
     },
     {
       icon: <MapPin className="text-accent-indigo" size={20} />,
       label: 'Location',
-      value: 'Noida, Uttar Pradesh, India',
+      value: location,
       href: '#',
     },
     {
       icon: <Linkedin className="text-accent-cyan" size={20} />,
       label: 'LinkedIn',
-      value: 'linkedin.com/in/ramashishyadav01',
-      href: 'https://www.linkedin.com/in/ramashishyadav01/',
+      value: linkedin.replace(/^https?:\/\/(www\.)?/, ''),
+      href: linkedin,
     },
     {
       icon: <Github className="text-accent-indigo" size={20} />,
       label: 'GitHub',
-      value: 'github.com/Ramashishyadav01',
-      href: 'https://github.com/Ramashishyadav01',
+      value: github.replace(/^https?:\/\/(www\.)?/, ''),
+      href: github,
     },
+    ...(contact.additionalLinks?.map((link) => ({
+      icon: <Globe className="text-accent-blue" size={20} />,
+      label: link.label,
+      value: link.url.replace(/^https?:\/\/(www\.)?/, ''),
+      href: link.url,
+    })) || []),
   ];
 
   return (
@@ -242,7 +303,7 @@ export default function Contact() {
                 Let's discuss your next project
               </h3>
               <p className="text-gray-400 leading-relaxed text-sm">
-                I am open to full-time opportunities,Full Stack Developer Role, and collaborations. Feel free to connect with me via email, LinkedIn, or by filling out the message form.
+                I am open to full-time opportunities, Full Stack Developer roles, and collaborations. Feel free to connect with me via email, LinkedIn, or by filling out the message form.
               </p>
             </div>
 
@@ -264,7 +325,7 @@ export default function Contact() {
                     </div>
                   </div>
                 );
-                
+
                 return isAnchor ? (
                   <a
                     key={info.label}
@@ -304,7 +365,7 @@ export default function Contact() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Nikhil Yadav"
+                      placeholder="Your Name"
                       required
                       className="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all duration-300"
                     />
@@ -321,7 +382,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="nikhil@example.com"
+                      placeholder="you@example.com"
                       required
                       className="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all duration-300"
                     />
@@ -339,7 +400,7 @@ export default function Contact() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    placeholder="Project Consultation"
+                    placeholder="Project Inquiry"
                     className="w-full px-4 py-3 rounded-xl bg-charcoal border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all duration-300"
                   />
                 </div>
@@ -390,10 +451,12 @@ export default function Contact() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center space-x-2 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm"
+                    className="flex items-start space-x-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm"
                   >
-                    <CheckCircle size={18} />
-                    <span>Thanks for reaching out! I will get back to you as soon as possible.</span>
+                    <CheckCircle size={18} className="mt-0.5 flex-shrink-0" />
+                    <span>
+                      {successMessage || 'Thanks for reaching out! I will get back to you as soon as possible.'}
+                    </span>
                   </motion.div>
                 )}
 
@@ -401,10 +464,26 @@ export default function Contact() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center space-x-2 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm"
+                    className="flex items-start space-x-3 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm"
                   >
-                    <AlertCircle size={18} className="flex-shrink-0" />
-                    <span>{errorMessage || 'Failed to submit. Please fill out all required fields.'}</span>
+                    <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <span>{errorMessage || 'Failed to submit. Please fill out all required fields.'}</span>
+                      {errorMessage.includes(email) && (
+                        <div className="mt-2">
+                          <a
+                            href={`mailto:${email}?subject=${encodeURIComponent(
+                              formData.subject || 'Portfolio Inquiry'
+                            )}&body=${encodeURIComponent(
+                              `Hi Ram,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+                            )}`}
+                            className="inline-flex items-center text-xs font-semibold text-accent-cyan underline hover:text-white"
+                          >
+                            Click to send directly via Email App
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </motion.div>
                 )}
               </form>

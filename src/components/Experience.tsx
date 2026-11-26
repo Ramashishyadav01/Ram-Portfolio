@@ -1,22 +1,15 @@
 import { motion } from 'framer-motion';
 import { Briefcase, Calendar, MapPin, CheckCircle2 } from 'lucide-react';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 
 export default function Experience() {
-  const experiences = [
-    {
-      role: 'Jr. Full Stack Developer (Intern)',
-      company: 'Global Tech Reach',
-      location: 'Dubai UAE (Remote)',
-      period: 'Nov 2025 – Jan 2026',
-      description: 'Delivered an enterprise-grade multi-tier Accounting & Financial Management System in a 60-day remote sprint.',
-      achievements: [
-        'Engineered a production-grade multi-tier Accounting System in 60 days — real-time Chart of Accounts, Double-Entry Journal with automated VAT & TDS calculation logic, and dynamic Cash Flow tracking used by the company\'s finance team.',
-        'Built an Expense module with automated debit note generation, multi-mode payment processing, and optimized financial reporting & export tools deployed across all accounting modules — reducing manual effort by ~60%.',
-        'Designed responsive React.js + Tailwind CSS dashboards; built REST APIs with Express.js and MongoDB; collaborated in an Agile remote team with Git branching and daily GitHub PR reviews.'
-      ],
-      skills: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Tailwind CSS', 'REST APIs', 'Git', 'Agile/Scrum']
-    }
-  ];
+  const { experiences } = usePortfolioData();
+
+  const sortedExperiences = [...experiences].sort((a, b) => a.order - b.order);
+
+  if (sortedExperiences.length === 0) {
+    return null;
+  }
 
   return (
     <section id="experience" className="py-20 relative">
@@ -46,9 +39,9 @@ export default function Experience() {
 
         {/* Experience Cards */}
         <div className="max-w-4xl mx-auto space-y-8">
-          {experiences.map((exp, index) => (
+          {sortedExperiences.map((exp, index) => (
             <motion.div
-              key={index}
+              key={exp._id || index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-100px' }}
