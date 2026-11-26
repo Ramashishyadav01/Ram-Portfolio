@@ -4,7 +4,7 @@ let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
 export async function connectToDatabase(): Promise<Db> {
-  if (cachedDb) return cachedDb;
+  if (cachedClient && cachedDb) return cachedDb;
 
   if (!process.env.MONGODB_URI) {
     throw new Error('MONGODB_URI environment variable is not set');

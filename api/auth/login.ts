@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import bcrypt from 'bcryptjs';
-import { connectToDatabase } from '../lib/db';
-import { signToken, setCorsHeaders, handleOptions, parseBody } from '../lib/auth';
+import { connectToDatabase } from '../lib/db.js';
+import { signToken, setCorsHeaders, handleOptions, parseBody } from '../lib/auth.js';
 
 interface LoginBody {
   email: string;

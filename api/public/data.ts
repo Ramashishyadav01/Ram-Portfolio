@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { connectToDatabase } from '../lib/db';
-import { setCorsHeaders, handleOptions } from '../lib/auth';
+import { connectToDatabase } from '../lib/db.js';
+import { setCorsHeaders, handleOptions } from '../lib/auth.js';
 
 export default async function handler(
   req: IncomingMessage & { body?: any },

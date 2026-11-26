@@ -17,7 +17,7 @@ export function verifyToken(token: string): JwtPayload {
 }
 
 export function getTokenFromRequest(req: IncomingMessage): string | null {
-  const authHeader = (req as any).headers?.authorization;
+  const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.slice(7);
   }
@@ -61,14 +61,18 @@ export function handleOptions(req: IncomingMessage, res: ServerResponse): boolea
   return false;
 }
 
-export async function parseBody<T = any>(req: IncomingMessage): Promise<T> {
-  if ((req as any).body && typeof (req as any).body === 'object') {
-    return (req as any).body as T;
+export async function parseBody<T = Record<string, unknown>>(
+  req: IncomingMessage
+): Promise<T> {
+  const reqWithBody = req as IncomingMessage & { body?: unknown };
+  if (reqWithBody.body && typeof reqWithBody.body === 'object') {
+    return reqWithBody.body as T;
   }
   const buffers: Uint8Array[] = [];
   for await (const chunk of req) {
     buffers.push(chunk);
   }
-  const raw = Buffer.concat(buffers).toString('utf-8');
-  return raw ? JSON.parse(raw) : {};
+  const raw = Buffer.concat(buffers).toString('utf-8').trim();
+  const parsed: unknown = raw ? JSON.parse(raw) : {};
+  return parsed as T;
 }
