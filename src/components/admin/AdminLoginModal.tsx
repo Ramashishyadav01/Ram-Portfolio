@@ -43,7 +43,7 @@ export default function AdminLoginModal({ isOpen, onClose, onSuccess }: AdminLog
       onClose();
       if (onSuccess) onSuccess();
     } catch {
-      toast.error('Incorrect password. Default master password is: ram@2026');
+      toast.error('Incorrect password. Default master password is: example@2026');
     } finally {
       setLoading(false);
     }
