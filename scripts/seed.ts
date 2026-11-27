@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import bcrypt from 'bcryptjs';
-import { connectToDatabase } from '../lib/db.js';
-import { setCorsHeaders, handleOptions, parseBody } from '../lib/auth.js';
+import { connectToDatabase } from '../api/_lib/db.js';
+import { setCorsHeaders, handleOptions, parseBody } from '../api/_lib/auth.js';
 
 interface SeedBody {
   email: string;

@@ -1,12 +1,12 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ObjectId } from 'mongodb';
-import { connectToDatabase } from '../lib/db.js';
+import { connectToDatabase } from '../_lib/db.js';
 import {
   requireAuth,
   setCorsHeaders,
   handleOptions,
   parseBody,
-} from '../lib/auth.js';
+} from '../_lib/auth.js';
 
 interface SkillBody {
   id?: string;

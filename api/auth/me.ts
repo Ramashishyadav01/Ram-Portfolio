@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ObjectId } from 'mongodb';
-import { requireAuth, setCorsHeaders, handleOptions } from '../lib/auth.js';
-import { connectToDatabase } from '../lib/db.js';
+import { requireAuth, setCorsHeaders, handleOptions } from '../_lib/auth.js';
+import { connectToDatabase } from '../_lib/db.js';
 
 export default async function handler(
   req: IncomingMessage & { body?: any },

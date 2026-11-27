@@ -1,12 +1,12 @@
 import type { IncomingMessage, ServerResponse } from 'http';
 import { ObjectId } from 'mongodb';
 import formidable from 'formidable';
-import { connectToDatabase } from '../lib/db.js';
-import { requireAuth, setCorsHeaders, handleOptions } from '../lib/auth.js';
+import { connectToDatabase } from '../_lib/db.js';
+import { requireAuth, setCorsHeaders, handleOptions } from '../_lib/auth.js';
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
-} from '../lib/cloudinary.js';
+} from '../_lib/cloudinary.js';
 
 export const config = { api: { bodyParser: false } };
 
