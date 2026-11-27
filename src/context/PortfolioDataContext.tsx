@@ -128,15 +128,15 @@ const initialDefaultProjects: ProjectData[] = [
   },
   {
     _id: 'proj-3',
-    title: 'Fit-Journey (Fitness Tracking App)',
+    title: 'KrishiKhata (Agri Financial & Crop Management)',
     description: [
-      'Developed a responsive frontend fitness dashboard for tracking daily workouts and visualizing health metrics; integrated API endpoints for secure user authentication and dynamic workout logs deployed on Vercel with CI/CD pipeline.',
-      'Implemented robust client-side error handling and form input validation; maintained detailed GitHub documentation for UI components and application state logic throughout development.'
+      'Digital accounting and farm management web platform designed to help agricultural producers track expenses, crop yields, and revenue streams with real-time financial summaries.',
+      'Built responsive UI with interactive dashboard analytics, clean data entry workflows, and optimized cloud deployment on Vercel.'
     ],
-    tech: ['React.js', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
+    tech: ['React.js', 'JavaScript', 'Tailwind CSS', 'Vercel'],
     image: fitJourneyImg,
-    github: 'https://github.com/Ramashishyadav01/Fit-Journey',
-    demo: 'https://fit-journey-wheat.vercel.app/',
+    github: 'https://github.com/Ramashishyadav01/KrishiKhata',
+    demo: 'https://krishi-khata-seven.vercel.app',
     status: 'published',
     order: 2,
   },
