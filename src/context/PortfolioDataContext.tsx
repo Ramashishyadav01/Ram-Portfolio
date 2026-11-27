@@ -46,7 +46,7 @@ const RESUME_STORAGE_KEY = 'portfolio_resume_data';
 const RESUME_NAME_KEY = 'portfolio_resume_name';
 const EXPERIENCE_STORAGE_KEY = 'portfolio_experience_data';
 const SKILLS_STORAGE_KEY = 'portfolio_skills_data';
-const PROJECTS_STORAGE_KEY = 'portfolio_projects_data';
+const PROJECTS_STORAGE_KEY = 'portfolio_projects_data_v2';
 const ABOUT_STORAGE_KEY = 'portfolio_about_data';
 const CONTACT_STORAGE_KEY = 'portfolio_contact_data';
 
@@ -232,8 +232,27 @@ export function PortfolioDataProvider({ children }: { children: ReactNode }) {
   // Projects
   const [projects, setProjects] = useState<ProjectData[]>(() => {
     try {
-      const stored = localStorage.getItem(PROJECTS_STORAGE_KEY);
-      if (stored) return JSON.parse(stored);
+      // Check v2 key first, then fallback to old key and migrate
+      const stored = localStorage.getItem(PROJECTS_STORAGE_KEY) || localStorage.getItem('portfolio_projects_data');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Auto-fix any stale broken URLs (e.g. non-existent Fit-Journey or Krishi-Khata with hyphen)
+          const sanitized = parsed.map((p: ProjectData) => {
+            if (p.github?.includes('Fit-Journey') || p.github?.includes('Krishi-Khata')) {
+              return {
+                ...p,
+                title: p.title?.includes('Fit-Journey') ? 'KrishiKhata (Agri Financial & Crop Management)' : p.title,
+                github: 'https://github.com/Ramashishyadav01/KrishiKhata',
+                demo: p.demo?.includes('fit-journey') ? 'https://krishi-khata-seven.vercel.app' : (p.demo || 'https://krishi-khata-seven.vercel.app'),
+              };
+            }
+            return p;
+          });
+          localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(sanitized));
+          return sanitized;
+        }
+      }
     } catch {}
     return initialDefaultProjects;
   });
